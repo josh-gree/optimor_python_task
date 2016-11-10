@@ -1,5 +1,6 @@
 from utils import initialise_browser
 from selenium.webdriver.common.keys import Keys
+from time import sleep
 
 # hard code list of countries for now - could read from file or take CL args?
 countries = 'Canada, Germany, Iceland, Pakistan, Singapore, South Africa'
@@ -24,8 +25,7 @@ search_box = browser.find_element_by_id('countryName')
 for country in countries:
 
     search_box.send_keys(country,Keys.ENTER)
-
-    # find the paymonthlyTariffPlan table
+    
+    sleep(0.5)
     table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
-
     print(table.get_attribute('innerHTML'))

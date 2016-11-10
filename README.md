@@ -1,3 +1,11 @@
+# Usage
+
+ - Install requirements using [anaconda](https://www.continuum.io/downloads)
+ ```
+ conda create --name optimor_python_task --file requirements.txt
+ ```
+
+
 # Task
 
 ##Optimor Python Developer Interview Task

@@ -24,8 +24,9 @@ search_box = browser.find_element_by_id('countryName')
 # conduct country queries
 for country in countries:
 
+    search_box.clear()
     search_box.send_keys(country,Keys.ENTER)
-    
+
     sleep(0.5)
     table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
-    print(table.get_attribute('innerHTML'))
+    print(country,'\n',table.get_attribute('innerHTML'))

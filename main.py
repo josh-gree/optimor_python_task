@@ -25,4 +25,7 @@ for country in countries:
 
     search_box.send_keys(country,Keys.ENTER)
 
-    print(browser.page_source)
+    # find the paymonthlyTariffPlan table
+    table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
+
+    print(table.get_attribute('innerHTML'))

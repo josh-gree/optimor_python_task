@@ -1,5 +1,10 @@
 from utils import initialise_browser
 
+# hard code list of countries for now - could read from file or take CL args?
+countries = 'Canada, Germany, Iceland, Pakistan, Singapore, South Africa'
+countries = countries.split(',')
+countries = [country.strip() for country in countries]
+
 try:
     browser = initialise_browser()
 except Exception as e:

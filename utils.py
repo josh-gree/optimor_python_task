@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from time import sleep
 
 
 def initialise_browser():
@@ -23,6 +25,8 @@ def get_country_data(browser,country,plan_type='paymonthlyTariffPlan'):
     search_box.clear()
 
     search_box.send_keys(country,Keys.ENTER)
+    sleep(0.4)
+
 
     data = get_table_data(browser)
 

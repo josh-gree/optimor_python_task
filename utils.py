@@ -42,13 +42,13 @@ def get_country_data(browser,country,plan_type='paymonthlyTariffPlan'):
     # this is really hacky should be a better way to do this
     # but seems to work...
     try:
-        data = get_table_data(browser)
+        data = get_table_data(browser,plan_type)
     except StaleElementReferenceException:
-        data = get_table_data(browser)
+        data = get_table_data(browser,plan_type)
 
     return data
 
-def get_table_data(browser):
+def get_table_data(browser,plan_type = 'paymonthlyTariffPlan'):
     '''
     This function will extract the data from the standardrates table on the page
 
@@ -59,7 +59,7 @@ def get_table_data(browser):
         data -> mobile,landline and sms costs for current country returned as a dict
     '''
     table = WebDriverWait(browser, 4).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]'))
+            EC.presence_of_element_located((By.XPATH, '//*[@id="{}"]//*[@id="standardRatesTable"]'.format(plan_type)))
     )
     rows =  [row.find_elements_by_xpath('.//td') for row in table.find_elements_by_xpath('.//tr')]
     row_labels = [row[0].get_attribute('innerHTML') for row in rows]

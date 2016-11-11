@@ -1,5 +1,4 @@
 from utils import initialise_browser, get_country_data, get_table_data
-from selenium.webdriver.common.keys import Keys
 from time import sleep
 
 # hard code list of countries for now - could read from file or take CL args?

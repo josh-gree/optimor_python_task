@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from time import sleep
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def initialise_browser():
@@ -51,8 +53,9 @@ def get_table_data(browser):
     Output:
         data -> mobile,landline and sms costs for current country returned as a dict
     '''
-    table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
-
+    table = WebDriverWait(browser, 4).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]'))
+    )
     rows =  [row.find_elements_by_xpath('.//td') for row in table.find_elements_by_xpath('.//tr')]
     row_labels = [row[0].get_attribute('innerHTML') for row in rows]
     row_values = [row[1].get_attribute('innerHTML') for row in rows]

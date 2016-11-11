@@ -22,11 +22,13 @@ assert browser.title == 'O2 | International | International Caller Bolt On'
 search_box = browser.find_element_by_id('countryName')
 
 # conduct country queries
-for country in countries:
+for country in countries[0]:
 
     search_box.clear()
     search_box.send_keys(country,Keys.ENTER)
 
     sleep(0.5)
     table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
-    print(country,'\n',table.get_attribute('innerHTML'))
+
+
+browser.close()

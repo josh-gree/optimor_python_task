@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 def initialise_browser():
@@ -36,10 +37,14 @@ def get_country_data(browser,country,plan_type='paymonthlyTariffPlan'):
     search_box.clear()
 
     search_box.send_keys(country,Keys.ENTER)
-    sleep(0.4)
 
 
-    data = get_table_data(browser)
+    # this is really hacky should be a better way to do this
+    # but seems to work...
+    try:
+        data = get_table_data(browser)
+    except StaleElementReferenceException:
+        data = get_table_data(browser)
 
     return data
 

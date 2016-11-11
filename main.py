@@ -1,3 +1,5 @@
+import pandas as pd
+
 from utils import initialise_browser, get_country_data, get_table_data
 from time import sleep
 
@@ -24,11 +26,23 @@ search_box = browser.find_element_by_id('countryName')
 data_monthly = [(country,get_country_data(browser,country)) for country in countries]
 data_paygo = [(country,get_country_data(browser,country,plan_type='payandgoTariffPlan')) for country in countries]
 
-print('Data Monthly')
-print(data_monthly)
-print('Data pay and go')
-print(data_paygo)
+# clean up data and put into pandas
+df_monthly = pd.DataFrame(data_monthly)
+df_paygo = pd.DataFrame(data_paygo)
 
+df_monthly['country'] = df_monthly[0].str.split().map(lambda x : "_".join(x).lower())
+df_monthly['mobile_cost'] = df_monthly[1].map(lambda x : float(x['Mobiles'][1:]))
+df_monthly['landline_cost'] = df_monthly[1].map(lambda x : float(x['Landline'][1:]))
+df_monthly['txtmsg_cost'] = df_monthly[1].map(lambda x : float(x['Cost per text message'][:-1])/100)
+df_monthly = df_monthly.drop([0,1],axis=1)
 
+df_paygo['country'] = df_paygo[0].str.split().map(lambda x : "_".join(x).lower())
+df_paygo['mobile_cost'] = df_paygo[1].map(lambda x : float(x['Mobiles'][1:]))
+df_paygo['landline_cost'] = df_paygo[1].map(lambda x : float(x['Landline'][1:]))
+df_paygo['txtmsg_cost'] = df_paygo[1].map(lambda x : float(x['Cost per text message'][:-1])/100)
+df_paygo = df_paygo.drop([0,1],axis=1)
+
+print(df_paygo)
+print(df_monthly)
 
 browser.close()

@@ -19,7 +19,16 @@ def initialise_browser():
 
 def get_country_data(browser,country,plan_type='paymonthlyTariffPlan'):
     '''
+    This fuction will submit a country query to the website and then call
+    a function to extract the data
 
+    Inputs:
+        browser -> selenium browser object
+        country -> country to query
+        plan_type -> paymonthly or paygo
+
+    Output:
+        data -> price data for country in a dict
     '''
     search_box = browser.find_element_by_id('countryName')
     search_box.clear()
@@ -34,7 +43,13 @@ def get_country_data(browser,country,plan_type='paymonthlyTariffPlan'):
 
 def get_table_data(browser):
     '''
+    This function will extract the data from the standardrates table on the page
 
+    Inputs:
+        browser -> selenium browser object
+
+    Output:
+        data -> mobile,landline and sms costs for current country returned as a dict
     '''
     table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
 

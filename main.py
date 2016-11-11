@@ -1,4 +1,4 @@
-from utils import initialise_browser
+from utils import initialise_browser, get_country_data, get_table_data
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 
@@ -24,17 +24,21 @@ search_box = browser.find_element_by_id('countryName')
 # conduct country queries
 for country in countries:
 
-    search_box.clear()
-    search_box.send_keys(country,Keys.ENTER)
+    data = get_country_data(browser,country)
 
-    sleep(0.5)
-    table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
+    print(data)
 
-    rows = table.find_elements_by_xpath('.//tr//td')
-    rows = [element.get_attribute('innerHTML') for element in rows]
-    keys = rows[::2]
-    vals = rows[1::2]
-    print(float(vals[0][1:]))
+    # search_box.clear()
+    # search_box.send_keys(country,Keys.ENTER)
+    #
+    # sleep(0.5)
+    # table = browser.find_element_by_xpath('//*[@id="paymonthlyTariffPlan"]//*[@id="standardRatesTable"]')
+    #
+    # rows = table.find_elements_by_xpath('.//tr//td')
+    # rows = [element.get_attribute('innerHTML') for element in rows]
+    # keys = rows[::2]
+    # vals = rows[1::2]
+    # print(float(vals[0][1:]))
 
 
 

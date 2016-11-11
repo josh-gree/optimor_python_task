@@ -21,14 +21,13 @@ assert browser.title == 'O2 | International | International Caller Bolt On'
 search_box = browser.find_element_by_id('countryName')
 
 # conduct country queries
-for country in countries:
+data_monthly = [(country,get_country_data(browser,country)) for country in countries]
+data_paygo = [(country,get_country_data(browser,country,plan_type='payandgoTariffPlan')) for country in countries]
 
-    data_monthly = get_country_data(browser,country)
-    data_go = get_country_data(browser,country,'payandgoTariffPlan')
-
-    print(data_monthly)
-
-    print(data_go)
+print('Data Monthly')
+print(data_monthly)
+print('Data pay and go')
+print(data_paygo)
 
 
 

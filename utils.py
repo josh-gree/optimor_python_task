@@ -1,3 +1,5 @@
+import pandas as pd
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -67,3 +69,15 @@ def get_table_data(browser,plan_type = 'paymonthlyTariffPlan'):
     data = dict(zip(row_labels,row_values))
 
     return data
+
+def parse_data(data):
+
+    df = pd.DataFrame(data)
+
+    df['country'] = df[0].str.split().map(lambda x : "_".join(x).lower())
+    df['mobile_cost'] = df[1].map(lambda x : float(x['Mobiles'][1:]))
+    df['landline_cost'] = df[1].map(lambda x : float(x['Landline'][1:]))
+    df['txtmsg_cost'] = df[1].map(lambda x : float(x['Cost per text message'][:-1])/100)
+    df = df.drop([0,1],axis=1)
+
+    return df

@@ -1,5 +1,7 @@
-from utils import initialise_browser, get_country_data, get_table_data, parse_data
-from time import sleep
+import pandas as pd
+
+from utils import initialise_browser, get_country_source, get_table_data
+from bs4 import BeautifulSoup
 
 # hard code list of countries for now - could read from file or take CL args?
 countries = 'Canada, Germany, Iceland, Pakistan, Singapore, South Africa'
@@ -11,24 +13,51 @@ try:
 except Exception as e:
     print("Not able to initialise browser object - {}".format(e))
 
-browser.get('http://international.o2.co.uk/internationaltariffs/calling_abroad_from_uk')
+browser.get(
+    'http://international.o2.co.uk/internationaltariffs/calling_abroad_from_uk'
+    )
 
-# possibly not the best test since title my change but if this does happen may mean format
-# of whole page has changed...so good to know!
-assert browser.title == 'O2 | International | International Caller Bolt On'
+# possibly not the best test since title my change but if this does happen may
+# mean format of whole page has changed...so good to know!
+assert browser.title == 'O2 | International | International Caller Bolt On', \
+        "incorrect page title: html may have changed"
 
-# locate search box
-search_box = browser.find_element_by_id('countryName')
+# conduct country queries and extract page source
+sources = [get_country_source(browser, country) for country in countries]
 
-# conduct country queries
-data_monthly = [(country,get_country_data(browser,country)) for country in countries]
-data_paygo = [(country,get_country_data(browser,country,plan_type='payandgoTariffPlan')) for country in countries]
-
-# clean up data and put into pandas
-df_monthly = parse_data(data_monthly)
-df_paygo = parse_data(data_paygo)
-
-print(df_paygo)
-print(df_monthly)
-
+# close browser
 browser.close()
+
+# create soup objects
+soups = [BeautifulSoup(source, "html.parser") for source in sources]
+
+# check we got correct countries
+flag_select = '#standardRates > p > img'
+extracted_countries = [soup.select(flag_select)[0]['alt'] for soup in soups]
+assert extracted_countries == countries, 'extracted source does not match \
+                                            requested countries'
+
+# get the data
+paygo_select = '#payandgoTariffPlan #standardRatesTable > tbody > tr > td'
+paymonth_select = '#paymonthlyTariffPlan #standardRatesTable > tbody > tr > td'
+
+paygo_selections = [soup.select(paygo_select) for soup in soups]
+paymonth_selections = [soup.select(paymonth_select) for soup in soups]
+
+paygo_data = [(country, *get_table_data(selection)) for
+              country, selection in zip(countries, paygo_selections)]
+
+paymonth_data = [(country, *get_table_data(selection)) for
+                 country, selection in zip(countries, paymonth_selections)]
+
+# put into DataFrame
+paygo_df = pd.DataFrame(paygo_data, columns=[
+                        'country', 'landline_cost',
+                        'mobile_cost', 'sms_cost'])
+
+paymonth_df = pd.DataFrame(paymonth_data, columns=[
+                           'country', 'landline_cost',
+                           'mobile_cost', 'sms_cost'])
+
+# return requested data
+print(paymonth_df[['country', 'landline_cost']])

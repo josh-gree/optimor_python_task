@@ -48,7 +48,12 @@ def get_country_source(browser, country):
 
 def get_table_data(selection):
     '''
+    This function will extract data from the table
 
+    Input:
+        selection -> bs4 table selection
+    Output:
+        tuple -> prices for landline,mobile and sms
     '''
 
     numerical_data = selection[1::2]

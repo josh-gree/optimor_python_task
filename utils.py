@@ -2,15 +2,12 @@ import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import StaleElementReferenceException
+
 
 from time import sleep
 
 
-def initialise_browser():
+def initialise_browser(path_to_chromedriver):
     '''
     This function will initialise the selenium browser object
 
@@ -20,23 +17,33 @@ def initialise_browser():
     Output:
         browser -> selenium browser object
     '''
-    path_to_chromedriver = './chromedriver'
     browser = webdriver.Chrome(path_to_chromedriver)
     return browser
 
 
 def get_country_source(browser, country):
     '''
+    Function to query the page for a given country and then extract
+    and return the source code.
 
+    Inputs:
+        browser -> selenium browser object
+        country -> string representation of country to query
+
+    Output:
+        source -> html source of page as a string
     '''
 
     search_box = browser.find_element_by_id('countryName')
     search_box.clear()
 
     search_box.send_keys(country, Keys.ENTER)
-    sleep(1)
 
-    return browser.page_source
+    # Got to be a better way...but it works!
+    sleep(1)
+    source = browser.page_source
+
+    return source
 
 
 def get_table_data(selection):
